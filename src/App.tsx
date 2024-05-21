@@ -1,40 +1,49 @@
-import { Button, Flex, Heading, Image, Text } from '@aws-amplify/ui-react';
+import {Alert, Button, Flex, Input, Label} from '@aws-amplify/ui-react';
 import '@aws-amplify/ui-react/styles.css';
 import Layout from "./components/Layout.tsx";
+import {useState} from "react";
 
 function App() {
+    const [err, setError] = useState<Error | null>(null);
+
     return (
         <Layout>
+            {err && <Alert
+                variation="error"
+                isDismissible={true}
+                onDismiss={() => setError(null)}
+            >{err.message}</Alert>}
             <Flex
-                direction={{ base: 'column', large: 'row' }}
-                maxWidth="32rem"
+                direction={{base: 'column', large: 'row'}}
                 padding="1rem"
-                width="100%"
             >
-                <Image
-                    alt="Abstract art"
-                    height="21rem"
-                    objectFit="cover"
-                    src="https://images.unsplash.com/photo-1500462918059-b1a0cb512f1d?crop=entropy&cs=tinysrgb&fm=jpg&ixlib=rb-1.2.1&q=80&raw_url=true&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=987"
-                />
-                <Flex justifyContent="space-between" direction="column">
-                    <Heading level={3}>Abstract art</Heading>
-                    <Text>
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-                        eiusmod tempor incididunt ut labore et dolore magna aliqua. Volutpat
-                        sed cras ornare arcu dui. Duis aute irure dolor in reprehenderit in
-                        voluptate velit esse.
-                    </Text>
-                    <Button
-                        variation="primary"
-                        onClick={() => alert('Added item to cart!')}
-                    >
-                        Add to Cart
-                    </Button>
-                </Flex>
+                <form style={{width: "100%"}} onSubmit={(e) => {
+                    e.preventDefault()
+                    try {
+                        createSnippet()
+                    } catch(err) {
+                        setError(err as Error)
+                    }
+                }}>
+                    <Label htmlFor="create-snippet" fontWeight="semibold">New Snippet</Label>
+                    <Input
+                        as="textarea"
+                        size="large"
+                        height="20rem"
+                        id="create-snippet"
+                        isRequired
+                    ></Input>
+                    <Flex justifyContent="start">
+                        <Button type="submit" size="small" variation="primary">Create New Snippet</Button>
+                    </Flex>
+                </form>
             </Flex>
         </Layout>
     );
+}
+
+function createSnippet() {
+    throw new Error('Not yet implemented');
 }
 
 export default App;

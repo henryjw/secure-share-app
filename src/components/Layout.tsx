@@ -11,7 +11,8 @@ const Layout: React.FC<AppLayoutProps> = ({ children }) => {
         <Flex direction="column" minHeight="100vh">
             <View
                 as="header"
-                padding="1rem"
+                paddingTop="1rem"
+                paddingLeft="1rem"
                 backgroundColor="brand.primary"
                 color="font.inverse"
             >
@@ -23,7 +24,7 @@ const Layout: React.FC<AppLayoutProps> = ({ children }) => {
 
             <Divider /> {/* Visual separation */}
 
-            <View as="main" padding="1rem" flex="max-content" alignSelf="center">
+            <View as="main" padding="1rem" flex="max-content" alignSelf="center" width="100%">
                 {children}
             </View>
 
