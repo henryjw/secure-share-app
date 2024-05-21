@@ -16,8 +16,9 @@ function App() {
             <Flex
                 direction={{base: 'column', large: 'row'}}
                 padding="1rem"
+                justifyContent="center"
             >
-                <form style={{width: "100%"}} onSubmit={(e) => {
+                <form style={{width: "100%", maxWidth: "1500px"}} onSubmit={(e) => {
                     e.preventDefault()
                     try {
                         createSnippet()
