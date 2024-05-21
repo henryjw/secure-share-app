@@ -33,9 +33,12 @@ function App() {
             >
                 <form style={{width: "100%", maxWidth: "1500px"}} onSubmit={(e) => {
                     e.preventDefault()
+
+                    const form = e.target as HTMLFormElement;
+
                     setSubmitting(true);
                     createSnippet({
-                        content: e.target.createSnippet.value,
+                        content: form["createSnippet"].value,
                         expiration: null,
                         burnOnRead: false
                     })
