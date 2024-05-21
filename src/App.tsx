@@ -1,10 +1,23 @@
 import {Alert, Button, Flex, Input, Label} from '@aws-amplify/ui-react';
 import '@aws-amplify/ui-react/styles.css';
-import Layout from "./components/Layout.tsx";
+import { generateClient } from 'aws-amplify/data';
 import {useState} from "react";
+
+import Layout from "./components/Layout.tsx";
+import type { Schema } from '../amplify/data/resource'; // Path to your backend resource definition
+
+
+type Snippet = {
+    content: string;
+    expiration: Date | null;
+    burnOnRead: boolean;
+}
+
+const client = generateClient<Schema>();
 
 function App() {
     const [err, setError] = useState<Error | null>(null);
+    const [submitting, setSubmitting] = useState(false);
 
     return (
         <Layout>
@@ -20,11 +33,16 @@ function App() {
             >
                 <form style={{width: "100%", maxWidth: "1500px"}} onSubmit={(e) => {
                     e.preventDefault()
-                    try {
-                        createSnippet()
-                    } catch(err) {
-                        setError(err as Error)
-                    }
+                    setSubmitting(true);
+                    createSnippet({
+                        content: e.target.createSnippet.value,
+                        expiration: null,
+                        burnOnRead: false
+                    })
+                        .then(() => {
+                            setError(null);
+                        })
+                        .catch(err => setError(err as Error)).finally(() => setSubmitting(false));
                 }}>
                     <Label htmlFor="create-snippet" fontWeight="semibold">New Snippet</Label>
                     <Input
@@ -32,10 +50,11 @@ function App() {
                         size="large"
                         height="20rem"
                         id="create-snippet"
+                        name="createSnippet"
                         isRequired
                     ></Input>
                     <Flex justifyContent="start">
-                        <Button type="submit" size="small" variation="primary">Create New Snippet</Button>
+                        <Button type="submit" size="small" variation="primary" isLoading={submitting}>Create New Snippet</Button>
                     </Flex>
                 </form>
             </Flex>
@@ -43,8 +62,15 @@ function App() {
     );
 }
 
-function createSnippet() {
-    throw new Error('Not yet implemented');
+async function createSnippet(snippet: Snippet) {
+    await client.models.Snippet.create({
+        content: snippet.content,
+        burnOnRead: snippet.burnOnRead,
+        expiration: snippet.expiration?.getTime() || undefined,
+    });
+
+    // TODO: redirect to a new page page with the link to the snippet
+    alert("Snippet created!");
 }
 
 export default App;
