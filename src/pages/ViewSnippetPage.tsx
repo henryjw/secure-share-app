@@ -1,6 +1,6 @@
 import Layout from "../components/Layout.tsx";
 import {useParams} from "react-router-dom";
-import {Alert, Flex, Input, Label, TextAreaField} from "@aws-amplify/ui-react";
+import {Alert, Flex, Input, Label} from "@aws-amplify/ui-react";
 import {generateClient} from "aws-amplify/api";
 import type {Schema} from "../../amplify/data/resource.ts";
 import {useState} from "react";
