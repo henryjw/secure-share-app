@@ -31,6 +31,7 @@ export default function ViewSnippetPage() {
     });
 
     return (
+        // FIXME: there's a lot of duplication here that's common with CreateNewSnippetPage.tsx. Consider refactoring.
         <Layout>
             <Flex id="messages" justifyContent="center" paddingBottom="small">
                 {message && <Alert
@@ -46,6 +47,7 @@ export default function ViewSnippetPage() {
             </Flex>
             <Flex direction={{base: 'column', large: 'row'}} justifyContent="center">
                 {/*TODO: add a button / icon to copy contents to clipboard*/}
+                <form style={{width: "100%", maxWidth: "1500px"}}>
                 <Label htmlFor="view-snippet" fontWeight="semibold">Snippet Contents</Label>
                 <Input
                     id="view-snippet"
@@ -57,7 +59,7 @@ export default function ViewSnippetPage() {
                     aria-multiline={true}
                     value={snippetContent}
                     style={{whiteSpace: 'pre'}} // Preserve line breaks
-                />
+                /></form>
             </Flex>
         </Layout>
     )
