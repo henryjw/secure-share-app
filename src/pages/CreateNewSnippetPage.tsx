@@ -87,9 +87,7 @@ async function createSnippet(snippet: Snippet): Promise<string> {
         expiration: snippet.expiration?.getTime() || undefined,
     });
 
-    const snippetUrl = `${window.location.origin}/snippet/${result.data?.id}`
-
-    return snippetUrl
+    return `${window.location.origin}/snippet/${result.data?.id}`
 }
 
 async function copyToClipboard(text: string) {
