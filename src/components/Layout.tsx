@@ -18,7 +18,7 @@ const Layout: React.FC<AppLayoutProps> = ({ children }) => {
             >
                 <Flex justifyContent="space-between">
                     {/* Add navigation links or other elements here */}
-                    <Button>+New</Button>
+                    <Button onClick={() => window.location.href="/"}>+New</Button>
                 </Flex>
             </View>
 
