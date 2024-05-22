@@ -27,7 +27,7 @@ function App() {
                 {snippetUrl && <Alert
                     variation="info"
                     isDismissible={false}
-                >Your snippet is URL <Link>{snippetUrl}</Link>
+                >Your snippet is URL <Link href={snippetUrl}>{snippetUrl}</Link>
                     <Button
                         size="small"
                         paddingLeft="0.5rem"
