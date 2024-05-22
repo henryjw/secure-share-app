@@ -23,22 +23,24 @@ function App() {
 
     return (
         <Layout>
-            {snippetUrl && <Alert
-                variation="info"
-                isDismissible={false}
-            >Your snippet is URL <Link>{snippetUrl}</Link>
-                <Button
-                    size="small"
-                    paddingLeft="0.5rem"
-                    marginLeft="0.5rem"
-                    onClick={() => copyToClipboard(snippetUrl)}>Copy to clipboard<FaClipboard/>
-                </Button>
-            </Alert>}
-            {err && <Alert
-                variation="error"
-                isDismissible={true}
-                onDismiss={() => setError(null)}
-            >{err.message}</Alert>}
+            <Flex id="messages" justifyContent="center">
+                {snippetUrl && <Alert
+                    variation="info"
+                    isDismissible={false}
+                >Your snippet is URL <Link>{snippetUrl}</Link>
+                    <Button
+                        size="small"
+                        paddingLeft="0.5rem"
+                        marginLeft="0.5rem"
+                        onClick={() => copyToClipboard(snippetUrl)}>Copy to clipboard<FaClipboard/>
+                    </Button>
+                </Alert>}
+                {err && <Alert
+                    variation="error"
+                    isDismissible={true}
+                    onDismiss={() => setError(null)}
+                >{err.message}</Alert>}
+            </Flex>
             <Flex
                 direction={{base: 'column', large: 'row'}}
                 padding="1rem"
