@@ -24,13 +24,12 @@ export default function ViewSnippetPage() {
                 return;
             }
 
-            setSnippetContent(snippet.data?.content || '');
-
             const data = snippet.data;
-            const isExpired = data.burnOnRead || data.expiration && data.expiration < Date.now();
+            const isExpired = data.expiration && data.expiration < Date.now();
 
             if (data.burnOnRead) {
                 setMessage('This snippet has been marked for deletion after reading.');
+                await deleteSnippet(data.id);
             }
 
             if (data.expiration) {
@@ -38,17 +37,15 @@ export default function ViewSnippetPage() {
                 setMessage(`This snippet will expire on ${expirationDate.toLocaleString()}`);
             }
 
-            if (!isExpired) {
-                return
+            // Hacky way to handle expired snippets. It would be better to re-render the component after deleting the snippet.
+            if (isExpired) {
+                await deleteSnippet(data.id);
+                setMessage('Snippet not found. It may have expired or been deleted.');
+                setSnippetContent('');
+                return;
             }
 
-            try {
-                await client.models.Snippet.delete({
-                    id: data.id,
-                });
-            } catch (err) {
-                console.error('Error updating Snippet:', err)
-            }
+            setSnippetContent(snippet.data?.content || '');
         }).catch((err) => {
             console.error('Error:', err)
             setError(err.message);
@@ -89,4 +86,14 @@ export default function ViewSnippetPage() {
             </Flex>
         </Layout>
     )
+}
+
+async function deleteSnippet(id: string): Promise<void> {
+    try {
+        await client.models.Snippet.delete({
+            id,
+        });
+    } catch (err) {
+        console.error('Error updating Snippet:', err)
+    }
 }
