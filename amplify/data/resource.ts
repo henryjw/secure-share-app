@@ -7,11 +7,11 @@ const schema = a.schema({
             expiration: a.timestamp(),
             content: a.string(),
             burnOnRead: a.boolean(),
-
+            createdBy: a.string()
         })
-        .authorization(allow => [
-            // TODO: update authorization rules based on requirements
+        .authorization((allow) => [
             allow.guest(),
+            allow.ownerDefinedIn('createdBy')
         ])
 });
 

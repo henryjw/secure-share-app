@@ -5,6 +5,7 @@ import {FaClipboard} from "react-icons/fa";
 import moment from 'moment';
 import {generateClient} from "aws-amplify/api";
 import type {Schema} from "../../amplify/data/resource.ts";
+import {getSnippetAbsoluteUrl} from "../utils/urls.ts";
 
 const client = generateClient<Schema>();
 
@@ -102,7 +103,15 @@ async function createSnippet(snippet: Snippet): Promise<string> {
         expiration: snippet.expiration || undefined,
     });
 
-    return `${window.location.origin}/snippet/${result.data?.id}`
+    if (result.errors) {
+        throw new Error(result.errors[0].message);
+    }
+
+    if (!result.data) {
+        throw new Error('Failed to create snippet');
+    }
+
+    return getSnippetAbsoluteUrl(result.data.id);
 }
 
 async function copyToClipboard(text: string) {

@@ -1,12 +1,15 @@
 import React from 'react';
-import { Flex, View, Text, Divider, Button } from '@aws-amplify/ui-react';
+import {Flex, View, Text, Divider, Button, } from '@aws-amplify/ui-react';
+
 import {APP_NAME} from "../constants.ts";
+import {ProfileMenu} from "./ProfileMenu.tsx";
+
 
 interface AppLayoutProps {
     children: React.ReactNode; // Define the children prop type
 }
 
-const Layout: React.FC<AppLayoutProps> = ({ children }) => {
+const Layout: React.FC<AppLayoutProps> = ({children}) => {
     return (
         <Flex direction="column" minHeight="100vh">
             <View
@@ -16,19 +19,20 @@ const Layout: React.FC<AppLayoutProps> = ({ children }) => {
                 backgroundColor="brand.primary"
                 color="font.inverse"
             >
-                <Flex justifyContent="space-between">
+                <Flex justifyContent="space-between" padding="small">
                     {/* Add navigation links or other elements here */}
-                    <Button onClick={() => window.location.href="/"}>+New</Button>
+                    <Button onClick={() => window.location.href = "/"}>+New</Button>
+                    <ProfileMenu/>
                 </Flex>
             </View>
 
-            <Divider /> {/* Visual separation */}
+            <Divider/> {/* Visual separation */}
 
             <View as="main" padding="1rem" flex="max-content" alignSelf="center" width="100%">
                 {children}
             </View>
 
-            <Divider /> {/* Visual separation */}
+            <Divider/> {/* Visual separation */}
 
             <View
                 as="footer"
@@ -42,5 +46,6 @@ const Layout: React.FC<AppLayoutProps> = ({ children }) => {
         </Flex>
     );
 };
+
 
 export default Layout;
