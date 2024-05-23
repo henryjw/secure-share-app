@@ -4,4 +4,6 @@ export const ROUTES = {
     HOME: "/",
     SNIPPET: "/snippet/:id",
     MANAGE_SNIPPETS: "/manage",
+    LOGIN: "/login",
+    SIGNUP: "/signup",
 }

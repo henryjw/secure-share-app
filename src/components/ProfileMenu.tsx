@@ -3,13 +3,13 @@ import {FaUser} from "react-icons/fa";
 import {ROUTES} from "../constants.ts";
 
 export function ProfileMenu() {
-    const { user, signOut, toSignUp, toSignIn } = useAuthenticator((context) => [context.user]);
+    const { user, signOut } = useAuthenticator((context) => [context.user]);
 
     if (!user) {
         return (
             <Flex direction="row">
-                <Button onClick={() => toSignIn()}>Login</Button>
-                <Button onClick={() => toSignUp()}>Create Account</Button>
+                <Button onClick={() => window.location.href = ROUTES.LOGIN}>Login</Button>
+                <Button onClick={() => window.location.href = ROUTES.SIGNUP}>Create Account</Button>
             </Flex>
         )
     }
@@ -23,7 +23,7 @@ export function ProfileMenu() {
             <MenuItem onClick={() => window.location.href = ROUTES.MANAGE_SNIPPETS}>
                 My Snippets
             </MenuItem>
-            <MenuItem onClick={() => signOut()}>
+            <MenuItem onClick={() => { signOut(); window.location.href = ROUTES.HOME }}>
                 Sign out
             </MenuItem>
         </Menu>
