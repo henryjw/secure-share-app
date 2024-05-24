@@ -1,11 +1,12 @@
 import {useState} from "react";
 import Layout from "../components/Layout.tsx";
-import {Alert, Button, Flex, Input, Label, Link, SelectField} from "@aws-amplify/ui-react";
+import {Alert, Button, Flex, Input, Label, Link, SelectField, useAuthenticator} from "@aws-amplify/ui-react";
 import {FaClipboard} from "react-icons/fa";
 import moment from 'moment';
 import {generateClient} from "aws-amplify/api";
 import type {Schema} from "../../amplify/data/resource.ts";
 import {getSnippetAbsoluteUrl} from "../utils/urls.ts";
+import {getAuthMode} from "../utils/auth.ts";
 
 const client = generateClient<Schema>();
 
@@ -19,6 +20,9 @@ export default function CreateNewSnippetPage(): JSX.Element {
     const [err, setError] = useState<Error | null>(null);
     const [submitting, setSubmitting] = useState(false);
     const [snippetUrl, setSnippetUrl] = useState<string | null>(null);
+    const { user } = useAuthenticator((context) => [context.user]);
+
+    const isLoggedIn = !!user;
 
     return (
         <Layout>
@@ -55,7 +59,7 @@ export default function CreateNewSnippetPage(): JSX.Element {
                         content: form["createSnippet"].value,
                         expiration: parseInt(form["expiration"].value, 10) || null,
                         burnOnRead: form["burnOnRead"].value === "true",
-                    })
+                    }, isLoggedIn)
                         .then((url: string) => {
                             setError(null);
                             setSnippetUrl(url);
@@ -96,11 +100,13 @@ export default function CreateNewSnippetPage(): JSX.Element {
     );
 }
 
-async function createSnippet(snippet: Snippet): Promise<string> {
+async function createSnippet(snippet: Snippet, isLoggedIn: boolean): Promise<string> {
     const result = await client.models.Snippet.create({
         content: snippet.content,
         burnOnRead: snippet.burnOnRead,
         expiration: snippet.expiration || undefined,
+    }, {
+        authMode: getAuthMode(isLoggedIn),
     });
 
     if (result.errors) {
