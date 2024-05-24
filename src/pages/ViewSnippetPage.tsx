@@ -4,6 +4,7 @@ import {Alert, Flex, Input, Label} from "@aws-amplify/ui-react";
 import {generateClient} from "aws-amplify/api";
 import type {Schema} from "../../amplify/data/resource.ts";
 import {useEffect, useState} from "react";
+import {formatDate} from "../utils/dates.ts";
 
 const client = generateClient<Schema>();
 
@@ -31,8 +32,7 @@ export default function ViewSnippetPage() {
                 setMessage('This snippet has been marked for deletion after reading.');
                 await deleteSnippet(data.id);
             } else if (data.expiration) {
-                const expirationDate = new Date(data.expiration);
-                setMessage(`This snippet will expire on ${expirationDate.toLocaleString()}`);
+                setMessage(`This snippet will expire on ${formatDate(data.expiration)}`);
             }
 
             // Hacky way to handle expired snippets. It would be better to re-render the component after deleting the snippet.
