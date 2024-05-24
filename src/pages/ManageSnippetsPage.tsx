@@ -1,7 +1,7 @@
 import {
     Alert,
     Authenticator,
-    Flex, Link,
+    Flex, Link, Placeholder,
     Table,
     TableBody,
     TableCell,
@@ -32,6 +32,7 @@ export default function ManageSnippetsPage() {
     const [err, setError] = useState<Error | null>(null);
     const {user} = useAuthenticator((context) => [context.user]);
     const [snippets, setSnippets] = useState<Snippet[]>([]);
+    const [initialized, setInitialized] = useState<boolean>(false);
     const [deletingIds, setDeletingIds] = useState<string[]>([]);
     const navigate = useNavigate();
 
@@ -68,7 +69,10 @@ export default function ManageSnippetsPage() {
                 setSnippets((snippets || []) as Snippet[])
             }).catch((err) => {
             console.error('Error:', err)
-        });
+        })
+            .finally(() => {
+                setInitialized(true)
+            });
     }, [user]);
 
     const deleteSnippet = async (id: string) => {
@@ -121,9 +125,11 @@ export default function ManageSnippetsPage() {
                                     </TableRow>
                                 </TableHead>
                                 {snippets.length === 0 ? (
-                                    <Flex justifyContent="center">
-                                        <Text>No Snippets found.</Text>
-                                    </Flex>
+                                    initialized ? (
+                                        <Flex justifyContent="center">
+                                            <Text>No Snippets found.</Text>
+                                        </Flex>
+                                    ) : <Placeholder size="large"/>
                                 ) : (
                                     <TableBody>
                                         {snippets.map((snippet) => {
@@ -161,4 +167,3 @@ export default function ManageSnippetsPage() {
         </Layout>
     )
 }
-
