@@ -30,9 +30,7 @@ export default function ViewSnippetPage() {
             if (data.burnOnRead) {
                 setMessage('This snippet has been marked for deletion after reading.');
                 await deleteSnippet(data.id);
-            }
-
-            if (data.expiration) {
+            } else if (data.expiration) {
                 const expirationDate = new Date(data.expiration);
                 setMessage(`This snippet will expire on ${expirationDate.toLocaleString()}`);
             }
