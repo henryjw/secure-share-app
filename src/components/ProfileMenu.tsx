@@ -1,15 +1,17 @@
 import {Button, Flex, Menu, MenuButton, MenuItem, useAuthenticator} from "@aws-amplify/ui-react";
 import {FaUser} from "react-icons/fa";
 import {ROUTES} from "../constants.ts";
+import {useNavigate} from "react-router-dom";
 
 export function ProfileMenu() {
-    const { user, signOut } = useAuthenticator((context) => [context.user]);
+    const navigate = useNavigate();
+    const { user, signOut,  } = useAuthenticator((context) => [context.user]);
 
     if (!user) {
         return (
             <Flex direction="row">
-                <Button onClick={() => window.location.href = ROUTES.LOGIN}>Login</Button>
-                <Button onClick={() => window.location.href = ROUTES.SIGNUP}>Create Account</Button>
+                <Button onClick={() => navigate(ROUTES.LOGIN)}>Login</Button>
+                <Button onClick={() => navigate(ROUTES.SIGNUP)}>Create Account</Button>
             </Flex>
         )
     }
@@ -20,10 +22,10 @@ export function ProfileMenu() {
                 <FaUser/>
             </MenuButton>
         }>
-            <MenuItem onClick={() => window.location.href = ROUTES.MANAGE_SNIPPETS}>
+            <MenuItem onClick={() => navigate(ROUTES.MANAGE_SNIPPETS)}>
                 My Snippets
             </MenuItem>
-            <MenuItem onClick={() => { signOut(); window.location.href = ROUTES.HOME }}>
+            <MenuItem onClick={() => { signOut(); navigate(ROUTES.HOME) }}>
                 Sign out
             </MenuItem>
         </Menu>
