@@ -7,6 +7,7 @@ import {
     TableCell,
     TableHead,
     TableRow,
+    Text,
     useAuthenticator, View,
 } from "@aws-amplify/ui-react";
 import {useEffect, useState} from "react";
@@ -108,7 +109,8 @@ export default function ManageSnippetsPage() {
                             <h2>My Snippets</h2>
                             <Table
                                 caption=""
-                                highlightOnHover={false}>
+                                highlightOnHover={false}
+                            >
                                 <TableHead>
                                     <TableRow>
                                         <TableCell as="th">Created At</TableCell>
@@ -118,33 +120,39 @@ export default function ManageSnippetsPage() {
                                         <TableCell as="th">Delete</TableCell>
                                     </TableRow>
                                 </TableHead>
-                                <TableBody>
-                                    {snippets.map((snippet) => {
-                                        const snippetAbsoluteUrl = getSnippetAbsoluteUrl(snippet.id);
-                                        const snippetRelativeUrl = getSnippetRelativeUrl(snippet.id);
+                                {snippets.length === 0 ? (
+                                    <Flex justifyContent="center">
+                                        <Text>No Snippets found.</Text>
+                                    </Flex>
+                                ) : (
+                                    <TableBody>
+                                        {snippets.map((snippet) => {
+                                            const snippetAbsoluteUrl = getSnippetAbsoluteUrl(snippet.id);
+                                            const snippetRelativeUrl = getSnippetRelativeUrl(snippet.id);
 
-                                        return (
-                                            <TableRow key={snippet.id}
-                                                      className={deletingIds.includes(snippet.id) ? 'fade-out' : ''}>
-                                                <TableCell>{formatDate(snippet.createdAt)}</TableCell>
-                                                <TableCell>
-                                                    <Link
-                                                        href={snippetAbsoluteUrl}>{snippetRelativeUrl}
-                                                    </Link>
-                                                    <CopyToClipboardButton contents={snippetAbsoluteUrl}/>
-                                                </TableCell>
-                                                <TableCell>{snippet.burnOnRead ? 'Yes' : 'No'}</TableCell>
-                                                <TableCell>{formatDate(snippet.expiration, 'Never')}</TableCell>
-                                                <TableCell>
-                                                    <FaTrash
-                                                        onClick={() => deleteSnippet(snippet.id)}
-                                                        style={{cursor: 'pointer'}}
-                                                    />
-                                                </TableCell>
-                                            </TableRow>
-                                        )
-                                    })}
-                                </TableBody>
+                                            return (
+                                                <TableRow key={snippet.id}
+                                                          className={deletingIds.includes(snippet.id) ? 'fade-out' : ''}>
+                                                    <TableCell>{formatDate(snippet.createdAt)}</TableCell>
+                                                    <TableCell>
+                                                        <Link
+                                                            href={snippetAbsoluteUrl}>{snippetRelativeUrl}
+                                                        </Link>
+                                                        <CopyToClipboardButton contents={snippetAbsoluteUrl}/>
+                                                    </TableCell>
+                                                    <TableCell>{snippet.burnOnRead ? 'Yes' : 'No'}</TableCell>
+                                                    <TableCell>{formatDate(snippet.expiration, 'Never')}</TableCell>
+                                                    <TableCell>
+                                                        <FaTrash
+                                                            onClick={() => deleteSnippet(snippet.id)}
+                                                            style={{cursor: 'pointer'}}
+                                                        />
+                                                    </TableCell>
+                                                </TableRow>
+                                            )
+                                        })}
+                                    </TableBody>
+                                )}
                             </Table>
                         </Flex>
                     </View>
