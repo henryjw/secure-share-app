@@ -1,3 +1,3 @@
-export function formatDate(timestamp: string | number | null | undefined): string | null {
-    return timestamp ? new Date(timestamp).toLocaleString() : null;
+export function formatDate(timestamp: string | number | null | undefined, nullValue?: string): string | null {
+    return timestamp ? new Date(timestamp).toLocaleString() : (nullValue ?? null);
 }

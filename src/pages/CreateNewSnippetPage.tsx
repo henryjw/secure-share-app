@@ -1,12 +1,12 @@
 import {useState} from "react";
 import Layout from "../components/Layout.tsx";
 import {Alert, Button, Flex, Input, Label, Link, SelectField, useAuthenticator} from "@aws-amplify/ui-react";
-import {FaClipboard} from "react-icons/fa";
 import moment from 'moment';
 import {generateClient} from "aws-amplify/api";
 import type {Schema} from "../../amplify/data/resource.ts";
 import {getSnippetAbsoluteUrl} from "../utils/urls.ts";
 import {getAuthMode} from "../utils/auth.ts";
+import CopyToClipboardButton from "../components/CopyToClipboardButton.tsx";
 
 const client = generateClient<Schema>();
 
@@ -31,12 +31,7 @@ export default function CreateNewSnippetPage(): JSX.Element {
                     variation="info"
                     isDismissible={false}
                 >Your snippet is URL <Link href={snippetUrl}>{snippetUrl}</Link>
-                    <Button
-                        size="small"
-                        paddingLeft="0.5rem"
-                        marginLeft="0.5rem"
-                        onClick={() => copyToClipboard(snippetUrl)}>Copy to clipboard<FaClipboard/>
-                    </Button>
+                    <CopyToClipboardButton contents={snippetUrl}/>
                 </Alert>}
                 {err && <Alert
                     variation="error"
@@ -118,8 +113,4 @@ async function createSnippet(snippet: Snippet, isLoggedIn: boolean): Promise<str
     }
 
     return getSnippetAbsoluteUrl(result.data.id);
-}
-
-async function copyToClipboard(text: string) {
-    await navigator.clipboard.writeText(text);
 }

@@ -22,6 +22,7 @@ import type {Schema} from "../../amplify/data/resource.ts";
 import {ROUTES} from "../constants.ts";
 import type {Snippet} from '../../API';
 import {formatDate} from "../utils/dates.ts";
+import CopyToClipboardButton from "../components/CopyToClipboardButton.tsx";
 
 const client = generateClient<Schema>();
 
@@ -71,7 +72,7 @@ export default function ManageSnippetsPage() {
 
     const deleteSnippet = async (id: string) => {
         try {
-            const { errors } = await client.models.Snippet.delete({
+            const {errors} = await client.models.Snippet.delete({
                 id: id
             })
 
@@ -118,23 +119,31 @@ export default function ManageSnippetsPage() {
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
-                                    {snippets.map((snippet) => (
-                                        <TableRow key={snippet.id} className={deletingIds.includes(snippet.id) ? 'fade-out' : ''}>
-                                            <TableCell>{formatDate(snippet.createdAt)}</TableCell>
-                                            <TableCell>
-                                                <Link
-                                                    href={getSnippetAbsoluteUrl(snippet.id)}>{getSnippetRelativeUrl(snippet.id)}</Link>
-                                            </TableCell>
-                                            <TableCell>{snippet.burnOnRead ? 'Yes' : 'No'}</TableCell>
-                                            <TableCell>{formatDate(snippet.expiration)}</TableCell>
-                                            <TableCell>
-                                                <FaTrash
-                                                    onClick={() => deleteSnippet(snippet.id)}
-                                                    style={{cursor: 'pointer'}}
-                                                />
-                                            </TableCell>
-                                        </TableRow>
-                                    ))}
+                                    {snippets.map((snippet) => {
+                                        const snippetAbsoluteUrl = getSnippetAbsoluteUrl(snippet.id);
+                                        const snippetRelativeUrl = getSnippetRelativeUrl(snippet.id);
+
+                                        return (
+                                            <TableRow key={snippet.id}
+                                                      className={deletingIds.includes(snippet.id) ? 'fade-out' : ''}>
+                                                <TableCell>{formatDate(snippet.createdAt)}</TableCell>
+                                                <TableCell>
+                                                    <Link
+                                                        href={snippetAbsoluteUrl}>{snippetRelativeUrl}
+                                                    </Link>
+                                                    <CopyToClipboardButton contents={snippetAbsoluteUrl}/>
+                                                </TableCell>
+                                                <TableCell>{snippet.burnOnRead ? 'Yes' : 'No'}</TableCell>
+                                                <TableCell>{formatDate(snippet.expiration, 'Never')}</TableCell>
+                                                <TableCell>
+                                                    <FaTrash
+                                                        onClick={() => deleteSnippet(snippet.id)}
+                                                        style={{cursor: 'pointer'}}
+                                                    />
+                                                </TableCell>
+                                            </TableRow>
+                                        )
+                                    })}
                                 </TableBody>
                             </Table>
                         </Flex>
