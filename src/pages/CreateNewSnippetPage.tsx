@@ -4,7 +4,7 @@ import {Alert, Button, Flex, Input, Label, Link, SelectField, TextField, useAuth
 import moment from 'moment';
 import {generateClient} from "aws-amplify/api";
 import type {Schema} from "../../amplify/data/resource";
-import {getSnippetAbsoluteUrl} from "../utils/urls";
+import {getSnippetAbsoluteUrl, getSnippetRelativeUrl} from "../utils/urls";
 import {getAuthMode} from "../utils/auth";
 import {buildSnippetPayload} from "../utils/data";
 import CopyToClipboardButton from "../components/CopyToClipboardButton.tsx";
@@ -20,19 +20,21 @@ type Snippet = {
 export default function CreateNewSnippetPage(): JSX.Element {
     const [err, setError] = useState<Error | null>(null);
     const [submitting, setSubmitting] = useState(false);
-    const [snippetUrl, setSnippetUrl] = useState<string | null>(null);
+    const [snippetId, setSnippetId] = useState<string | null>(null);
     const {user} = useAuthenticator((context) => [context.user]);
 
     const isLoggedIn = !!user;
+    const snippetAbsoluteUrl = getSnippetAbsoluteUrl(snippetId || '');
+    const snippetRelativeUrl = getSnippetRelativeUrl(snippetId || '')
 
     return (
         <Layout>
             <Flex id="messages" justifyContent="center">
-                {snippetUrl && <Alert
+                {snippetId && <Alert
                     variation="info"
                     isDismissible={false}
-                >Your snippet is URL <Link href={snippetUrl}>{snippetUrl}</Link>
-                    <CopyToClipboardButton contents={snippetUrl}/>
+                >Your snippet is URL <Link href={snippetAbsoluteUrl}>{snippetRelativeUrl}</Link>
+                    <CopyToClipboardButton contents={snippetAbsoluteUrl}/>
                 </Alert>}
                 {err && <Alert
                     variation="error"
@@ -69,9 +71,9 @@ export default function CreateNewSnippetPage(): JSX.Element {
                                 burnOnRead: formData.burnOnRead,
                             }, isLoggedIn)
                         })
-                        .then((url: string) => {
+                        .then((id: string) => {
                             setError(null);
-                            setSnippetUrl(url);
+                            setSnippetId(id);
                             form.reset();
                         })
                         .catch(err => setError(err as Error)).finally(() => setSubmitting(false));
@@ -132,5 +134,5 @@ async function createSnippet(snippet: Snippet, isLoggedIn: boolean): Promise<str
         throw new Error('Failed to create snippet');
     }
 
-    return getSnippetAbsoluteUrl(result.data.id);
+    return result.data.id;
 }
