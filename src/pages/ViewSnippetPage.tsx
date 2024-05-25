@@ -64,12 +64,10 @@ export default function ViewSnippetPage() {
         if (internalSnippet.hasPassword && password === null) {
             const userPassword = prompt('This snippet is password protected. Please enter the password:', '')
 
-            if (!userPassword) {
+            if (userPassword == null) {
                 setSnippetContent('');
                 setMessage(null);
                 setError(new Error('Password required to view snippet. Please reload the page and try again.'));
-                setPassword('')
-                return;
             }
 
             setPassword(userPassword)
@@ -90,6 +88,7 @@ export default function ViewSnippetPage() {
             .catch((err) => {
                 console.error('Error decoding snippet:', err)
                 setError(new Error("Incorrect password. Please reload the page and try again"));
+                setMessage(null)
                 setSnippetContent('');
             });
     }, [internalSnippet, password]);
