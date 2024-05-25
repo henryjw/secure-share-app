@@ -9,11 +9,18 @@ import {ROUTES} from "./constants.ts";
 import { Authenticator } from '@aws-amplify/ui-react';
 import LoginPage from './pages/LoginPage.tsx';
 import SignUpPage from './pages/SignUpPage.tsx';
+import {ToastContainer} from "react-toastify";
 
 function App() {
     return (
         <BrowserRouter>
             <Authenticator.Provider>
+                <ToastContainer
+                    autoClose={1000}
+                    hideProgressBar={true}
+                    position="top-center"
+                    newestOnTop={true}
+                />
                 <Routes>
                     <Route path={ROUTES.HOME} element={<CreateNewSnippetPage/>}></Route>
                     <Route path={ROUTES.SNIPPET} element={<ViewSnippetPage/>}></Route>

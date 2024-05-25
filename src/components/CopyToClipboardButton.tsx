@@ -1,17 +1,11 @@
 import {Button} from "@aws-amplify/ui-react";
 import {FaClipboard} from "react-icons/fa";
-import { toast, ToastContainer, ToastOptions} from "react-toastify";
+import { toast, ToastOptions} from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 
 export default function CopyToClipboardButton({contents}: { contents: string }) {
     return (
         <>
-            <ToastContainer
-                autoClose={1000}
-                hideProgressBar={true}
-                position="top-center"
-                newestOnTop={true}
-            />
             <Button
                 size="small"
                 paddingLeft="0.5rem"
