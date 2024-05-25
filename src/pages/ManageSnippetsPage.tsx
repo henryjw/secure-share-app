@@ -126,8 +126,8 @@ export default function ManageSnippetsPage() {
                                     <TableRow>
                                         <TableCell as="th">Created At</TableCell>
                                         <TableCell as="th">URL</TableCell>
-                                        <TableCell as="th">Burn on Read</TableCell>
-                                        <TableCell as="th">Expires</TableCell>
+                                        <TableCell as="th" className="mobile-hide">Burn on Read</TableCell>
+                                        <TableCell as="th" className="mobile-hide">Expires</TableCell>
                                         <TableCell as="th">Delete</TableCell>
                                     </TableRow>
                                 </TableHead>
@@ -153,8 +153,8 @@ export default function ManageSnippetsPage() {
                                                         </Link>
                                                         <CopyToClipboardButton contents={snippetAbsoluteUrl}/>
                                                     </TableCell>
-                                                    <TableCell>{snippet.burnOnRead ? 'Yes' : 'No'}</TableCell>
-                                                    <TableCell>{formatDate(snippet.expiration, 'Never')}</TableCell>
+                                                    <TableCell className="mobile-hide">{snippet.burnOnRead ? 'Yes' : 'No'}</TableCell>
+                                                    <TableCell className="mobile-hide">{formatDate(snippet.expiration, 'Never')}</TableCell>
                                                     <TableCell>
                                                         <FaTrash
                                                             onClick={() => deleteSnippet(snippet.id)}
