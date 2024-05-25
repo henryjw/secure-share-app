@@ -6,16 +6,18 @@ import type {Schema} from "../../amplify/data/resource.ts";
 import {useEffect, useState} from "react";
 import {formatDate} from "../utils/dates.ts";
 import {decodeSnippetText, InternalSnippet, parseSnippetPayload} from "../utils/data.ts";
+import CopyToClipboardButton from "../components/CopyToClipboardButton.tsx";
 
 const client = generateClient<Schema>();
 
 export default function ViewSnippetPage() {
     const {id: snippetId} = useParams<{ id: string }>();
-    const [snippetContent, setSnippetContent] = useState<string>("Loading...");
+    const [snippetContent, setSnippetContent] = useState<string>('');
     const [err, setError] = useState<Error | null>(null);
     const [message, setMessage] = useState<string | null>(null);
     const [internalSnippet, setInternalSnippet] = useState<InternalSnippet | null>(null);
     const [password, setPassword] = useState<string | null>(null);
+    const [isLoading, setIsLoading] = useState<boolean>(true);
 
     useEffect(() => {
         client.models.Snippet.get({
@@ -53,7 +55,7 @@ export default function ViewSnippetPage() {
             console.error('Error:', err)
             setError(err.message);
             setSnippetContent('');
-        });
+        }).finally(() => setIsLoading(false))
     }, [snippetId]);
 
     useEffect(() => {
@@ -120,9 +122,14 @@ export default function ViewSnippetPage() {
                         boxShadow="medium"
                         readOnly={true}
                         aria-multiline={true}
-                        value={snippetContent}
+                        value={isLoading ? 'Loading...' : snippetContent}
                         style={{whiteSpace: 'pre'}} // Preserve line breaks
-                    /></form>
+                    />
+                    <Flex justifyContent="center" paddingTop="small">
+                        {snippetContent && !isLoading &&
+                            <CopyToClipboardButton contents={snippetContent}/>}
+                    </Flex>
+                </form>
             </Flex>
         </Layout>
     )
