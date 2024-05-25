@@ -18,6 +18,7 @@ export default function ViewSnippetPage() {
     const [internalSnippet, setInternalSnippet] = useState<InternalSnippet | null>(null);
     const [password, setPassword] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState<boolean>(true);
+    const [burnOnRead, setBurnOnRead] = useState<boolean>(false);
 
     useEffect(() => {
         client.models.Snippet.get({
@@ -37,7 +38,7 @@ export default function ViewSnippetPage() {
 
             if (data.burnOnRead) {
                 setMessage('This snippet has been marked for deletion after reading.');
-                await deleteSnippet(data.id);
+                setBurnOnRead(true)
             } else if (data.expiration) {
                 setMessage(`This snippet will expire on ${formatDate(data.expiration)}`);
             }
@@ -86,6 +87,10 @@ export default function ViewSnippetPage() {
                 }
 
                 setSnippetContent(text);
+
+                if (burnOnRead) {
+                    return deleteSnippet(snippetId!);
+                }
             })
             .catch((err) => {
                 console.error('Error decoding snippet:', err)
