@@ -54,7 +54,7 @@ export default function ManageSnippetsPage() {
                     createdBy: {
                         // For some reason, the value is stored as `<id>::<id>` in the database
                         beginsWith: user.userId
-                    }
+                    },
                 },
                 authMode: getAuthMode(isLoggedIn),
             },
@@ -66,6 +66,13 @@ export default function ManageSnippetsPage() {
                 }
 
                 console.log('Snippets:', snippets)
+
+                // Not sure how to sort the snippets in the API call, so we'll do it here
+                snippets.sort((a, b) => {
+                    return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+                })
+
+
                 setSnippets((snippets || []) as Snippet[])
             }).catch((err) => {
             console.error('Error:', err)
