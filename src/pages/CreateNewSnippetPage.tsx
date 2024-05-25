@@ -75,6 +75,8 @@ export default function CreateNewSnippetPage(): JSX.Element {
                             setError(null);
                             setSnippetId(id);
                             form.reset();
+                            // Scroll to the top of the page
+                            window.scroll(0, 0);
                         })
                         .catch(err => setError(err as Error)).finally(() => setSubmitting(false));
                 }}>
