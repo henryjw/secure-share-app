@@ -1,11 +1,12 @@
 import {useState} from "react";
 import Layout from "../components/Layout.tsx";
-import {Alert, Button, Flex, Input, Label, Link, SelectField, useAuthenticator} from "@aws-amplify/ui-react";
+import {Alert, Button, Flex, Input, Label, Link, SelectField, TextField, useAuthenticator} from "@aws-amplify/ui-react";
 import moment from 'moment';
 import {generateClient} from "aws-amplify/api";
-import type {Schema} from "../../amplify/data/resource.ts";
-import {getSnippetAbsoluteUrl} from "../utils/urls.ts";
-import {getAuthMode} from "../utils/auth.ts";
+import type {Schema} from "../../amplify/data/resource";
+import {getSnippetAbsoluteUrl} from "../utils/urls";
+import {getAuthMode} from "../utils/auth";
+import {buildSnippetPayload} from "../utils/data";
 import CopyToClipboardButton from "../components/CopyToClipboardButton.tsx";
 
 const client = generateClient<Schema>();
@@ -20,7 +21,7 @@ export default function CreateNewSnippetPage(): JSX.Element {
     const [err, setError] = useState<Error | null>(null);
     const [submitting, setSubmitting] = useState(false);
     const [snippetUrl, setSnippetUrl] = useState<string | null>(null);
-    const { user } = useAuthenticator((context) => [context.user]);
+    const {user} = useAuthenticator((context) => [context.user]);
 
     const isLoggedIn = !!user;
 
@@ -49,12 +50,25 @@ export default function CreateNewSnippetPage(): JSX.Element {
 
                     const form = e.target as HTMLFormElement;
 
-                    setSubmitting(true);
-                    createSnippet({
+                    const formData = {
                         content: form["createSnippet"].value,
                         expiration: parseInt(form["expiration"].value, 10) || null,
                         burnOnRead: form["burnOnRead"].value === "true",
-                    }, isLoggedIn)
+                        password: form["password"].value,
+                    }
+
+                    buildSnippetPayload({
+                        rawText: formData.content,
+                        password: formData.password,
+                    })
+                        .then((content: string) => {
+                            setSubmitting(true);
+                            return  createSnippet({
+                                content,
+                                expiration: formData.expiration,
+                                burnOnRead: formData.burnOnRead,
+                            }, isLoggedIn)
+                        })
                         .then((url: string) => {
                             setError(null);
                             setSnippetUrl(url);
@@ -71,7 +85,7 @@ export default function CreateNewSnippetPage(): JSX.Element {
                         name="createSnippet"
                         isRequired
                     />
-                    <Flex direction="row">
+                    <Flex direction={{base: "column", small: "row", medium: "row"}}>
                         <SelectField name="expiration" label="Expiration">
                             <option value="0">Never</option>
                             <option value={moment().add(1, 'minute').utc().toDate().getTime()}>1 minute</option>
@@ -84,10 +98,16 @@ export default function CreateNewSnippetPage(): JSX.Element {
                             <option value="false">No</option>
                             <option value="true">Yes</option>
                         </SelectField>
+                        <TextField
+                            name="password"
+                            placeholder="Password"
+                            label="Password (Recommended)"
+                        />
                     </Flex>
-                    <Flex justifyContent="start" paddingTop="1rem">
-                        <Button type="submit" size="small" variation="primary" isLoading={submitting}>Create New
-                            Snippet</Button>
+                    <Flex paddingTop="1rem">
+                        <Button
+                            type="submit" size="small" variation="primary" isLoading={submitting}
+                        >Create New Snippet</Button>
                     </Flex>
                 </form>
             </Flex>

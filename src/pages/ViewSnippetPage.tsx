@@ -5,6 +5,7 @@ import {generateClient} from "aws-amplify/api";
 import type {Schema} from "../../amplify/data/resource.ts";
 import {useEffect, useState} from "react";
 import {formatDate} from "../utils/dates.ts";
+import {decodeSnippetText, InternalSnippet, parseSnippetPayload} from "../utils/data.ts";
 
 const client = generateClient<Schema>();
 
@@ -13,10 +14,12 @@ export default function ViewSnippetPage() {
     const [snippetContent, setSnippetContent] = useState<string>("Loading...");
     const [err, setError] = useState<Error | null>(null);
     const [message, setMessage] = useState<string | null>(null);
+    const [internalSnippet, setInternalSnippet] = useState<InternalSnippet | null>(null);
+    const [password, setPassword] = useState<string | null>(null);
 
     useEffect(() => {
         client.models.Snippet.get({
-            id: snippetId as string
+            id: snippetId!
         }).then(async (snippet) => {
             console.log('Snippet:', snippet)
             if (!snippet.data) {
@@ -24,6 +27,8 @@ export default function ViewSnippetPage() {
                 setSnippetContent('');
                 return;
             }
+
+            console.log('Snippet:', snippet)
 
             const data = snippet.data;
             const isExpired = data.expiration && data.expiration < Date.now();
@@ -43,13 +48,51 @@ export default function ViewSnippetPage() {
                 return;
             }
 
-            setSnippetContent(snippet.data?.content || '');
+            setInternalSnippet(parseSnippetPayload(data.content || ''));
         }).catch((err) => {
             console.error('Error:', err)
             setError(err.message);
             setSnippetContent('');
         });
     }, [snippetId]);
+
+    useEffect(() => {
+        if (!internalSnippet) {
+            return
+        }
+
+        if (internalSnippet.hasPassword && password === null) {
+            const userPassword = prompt('This snippet is password protected. Please enter the password:', '')
+
+            if (!userPassword) {
+                setSnippetContent('');
+                setMessage(null);
+                setError(new Error('Password required to view snippet. Please reload the page and try again.'));
+                setPassword('')
+                return;
+            }
+
+            setPassword(userPassword)
+            return
+        }
+
+        decodeSnippetText(internalSnippet.encryptedText, internalSnippet.key, password || undefined)
+            .then((text) => {
+                if (!text) {
+                    setError(new Error("Incorrect password. Please reload the page and try again"));
+                    setSnippetContent('');
+                    setMessage(null);
+                    return;
+                }
+
+                setSnippetContent(text);
+            })
+            .catch((err) => {
+                console.error('Error decoding snippet:', err)
+                setError(new Error("Incorrect password. Please reload the page and try again"));
+                setSnippetContent('');
+            });
+    }, [internalSnippet, password]);
 
     return (
         // FIXME: there's a lot of duplication here that's common with CreateNewSnippetPage.tsx. Consider refactoring.
