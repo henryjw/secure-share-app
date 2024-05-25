@@ -1,9 +1,8 @@
 import React from 'react';
-import {Flex, View, Text, Divider, Button, } from '@aws-amplify/ui-react';
+import {Flex, View, Text, Divider, Button,} from '@aws-amplify/ui-react';
 
 import {APP_NAME, ROUTES} from "../constants.ts";
 import {ProfileMenu} from "./ProfileMenu.tsx";
-import {useNavigate} from "react-router-dom";
 
 
 interface AppLayoutProps {
@@ -11,7 +10,6 @@ interface AppLayoutProps {
 }
 
 const Layout: React.FC<AppLayoutProps> = ({children}) => {
-    const navigate = useNavigate();
     return (
         <Flex direction="column" minHeight="100vh">
             <View
@@ -23,7 +21,7 @@ const Layout: React.FC<AppLayoutProps> = ({children}) => {
             >
                 <Flex justifyContent="space-between" padding="small">
                     {/* Add navigation links or other elements here */}
-                    <Button onClick={() => navigate(ROUTES.HOME)}>+New</Button>
+                    <Button onClick={() => window.location.href = ROUTES.HOME}>+New</Button>
                     <ProfileMenu/>
                 </Flex>
             </View>
