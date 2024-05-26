@@ -4,8 +4,8 @@ Checkout the [submission article](https://dev.to/henryjw/share-text-securely-wit
 
 ## Project overview
 ### Tech stack
-- **Frontend: ** ReactJS, Vite,
-- **Backend: ** AWS Amplify
+- **Frontend:** ReactJS, Vite,
+- **Backend:** AWS Amplify
 
 ## Getting Started
 ### Prerequisites
