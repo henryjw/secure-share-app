@@ -128,7 +128,9 @@ export default function ViewSnippetPage() {
                         readOnly={true}
                         aria-multiline={true}
                         value={isLoading ? 'Loading...' : snippetContent}
-                        style={{whiteSpace: 'pre'}} // Preserve line breaks
+                        // Preserve line breaks and wrap around. These are disabled by default
+                        // for read-only textarea
+                        style={{whiteSpace: 'pre-wrap', }}
                     />
                     <Flex justifyContent="center" paddingTop="small">
                         {snippetContent && !isLoading &&
