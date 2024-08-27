@@ -29,7 +29,7 @@
     "@typescript-eslint/eslint-plugin": "^7.2.0",
     "@typescript-eslint/parser": "^7.2.0",
     "@vitejs/plugin-react": "^4.2.1",
-    "aws-cdk": "^2.142.1",
+    "aws-cdk": "^2.154.1",
     "aws-cdk-lib": "^2.142.1",
     "constructs": "^10.3.0",
     "esbuild": "^0.21.3",
